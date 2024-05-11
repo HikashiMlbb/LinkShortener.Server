@@ -12,13 +12,15 @@ public class CacheRepositoryMock : ICacheRepository
     {
         return await Task.Run(new Func<Result<T>>(() =>
         {
-            var val = _cache[shortLink];
-            var res = JsonSerializer.Deserialize<T>(val);
-
-            if (res is null)
+            var val = _cache.ContainsKey(shortLink);
+            
+            if (_cache.TryGetValue(shortLink, out var cacheValue))
             {
                 return new Error("NotFound");
             }
+            
+            var res = JsonSerializer.Deserialize<T>(cacheValue!)!;
+            
 
             return res;
         }), token);

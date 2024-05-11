@@ -38,6 +38,7 @@ public class DatabaseRepositoryMock : IUrlMapsRepository
     private Result<IEnumerable<ShortLink>> GetExpiredShortLinks()
     {
         var expired = _urlMaps.Select(x => x.ShortLink);
+        _urlMaps.RemoveAll(_ => true);
         return Result<IEnumerable<ShortLink>>.Success(expired);
     }
 }

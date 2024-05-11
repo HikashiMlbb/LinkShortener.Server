@@ -8,6 +8,7 @@
       &lt;TestId&gt;xUnit::41D902FE-EB04-457B-A611-C49CCF2E330A::net8.0::Application.Tests.EventTests.EventRaisingTest&lt;/TestId&gt;
       &lt;TestId&gt;xUnit::41D902FE-EB04-457B-A611-C49CCF2E330A::net8.0::Application.Tests.EventTests.ExpiredDeletedEventTest&lt;/TestId&gt;
       &lt;TestId&gt;xUnit::41D902FE-EB04-457B-A611-C49CCF2E330A::net8.0::Application.Tests.EventTests.RemovingExpiredCacheUsingEvent&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::41D902FE-EB04-457B-A611-C49CCF2E330A::net8.0::Application.Tests.EventTests.DatabaseCleanupBackgroundJobImitateTest&lt;/TestId&gt;
     &lt;/TestAncestor&gt;
     &lt;ProjectFile&gt;41D902FE-EB04-457B-A611-C49CCF2E330A/f:UrlServiceTests.cs&lt;/ProjectFile&gt;
   &lt;/Or&gt;

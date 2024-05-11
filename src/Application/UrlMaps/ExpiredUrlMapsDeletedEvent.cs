@@ -3,4 +3,4 @@ using Domain.UrlMaps.ValueObjects;
 
 namespace Application.UrlMaps;
 
-public record ExpiredUrlMapsDeletedEvent(IReadOnlyList<ShortLink> ShortLinks) : IEvent;
+public record ExpiredUrlMapsDeletedEvent(IEnumerable<ShortLink> ShortLinks) : IEvent;

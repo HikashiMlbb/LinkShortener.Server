@@ -6,7 +6,7 @@ namespace Application.Common.Events;
 
 public class EventDispatcher(IServiceProvider provider) : IEventDispatcher
 {
-    public Task Raise<TEvent>(TEvent @event) where TEvent : IEvent
+    public async Task Raise<TEvent>(TEvent @event, CancellationToken token = default) where TEvent : IEvent
     {
         var type = typeof(IEventHandler<>).MakeGenericType(typeof(TEvent));
         var services = provider.GetServices(type);
@@ -19,10 +19,9 @@ public class EventDispatcher(IServiceProvider provider) : IEventDispatcher
                 continue;
             }
 
-            tasks.Add(obj.HandleAsync(@event));
+            tasks.Add(obj.HandleAsync(@event, token));
         }
 
-        Task.WaitAll(tasks.ToArray());
-        return Task.CompletedTask;
+        await Task.WhenAll(tasks);
     }
 }
