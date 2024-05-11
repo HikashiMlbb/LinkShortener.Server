@@ -10,20 +10,31 @@ public class CacheRepositoryMock : ICacheRepository
     
     public async Task<Result<T>> FetchAsync<T>(string shortLink, CancellationToken token = default) where T : class
     {
-        var val = _cache[shortLink];
-        var res = JsonSerializer.Deserialize<T>(val);
-
-        if (res is null)
+        return await Task.Run(new Func<Result<T>>(() =>
         {
-            return new Error("NotFound");
-        }
+            var val = _cache[shortLink];
+            var res = JsonSerializer.Deserialize<T>(val);
 
-        return res;
+            if (res is null)
+            {
+                return new Error("NotFound");
+            }
+
+            return res;
+        }), token);
     }
 
-    public async Task AddAsync<T>(string shortLinkValue, T value, CancellationToken token = default) where T : class
+    public async Task AddAsync<T>(string shortLink, T value, CancellationToken token = default) where T : class
     {
-        var val = JsonSerializer.Serialize(value);
-        _cache.Add(shortLinkValue, val);
+        await Task.Run(() =>
+        {
+            var val = JsonSerializer.Serialize(value);
+            _cache.Add(shortLink, val);
+        }, token);
+    }
+
+    public async Task DeleteAsync(string shortLink, CancellationToken token = default)
+    {
+        await Task.Run(() => _cache.Remove(shortLink), token);
     }
 }

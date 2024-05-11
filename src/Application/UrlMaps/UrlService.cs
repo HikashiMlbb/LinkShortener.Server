@@ -1,3 +1,4 @@
+using Application.Common.Errors;
 using Application.Common.Repositories;
 using Application.Services.Interfaces;
 using Domain.Common;
@@ -6,19 +7,13 @@ using Domain.UrlMaps.ValueObjects;
 
 namespace Application.UrlMaps;
 
-public sealed class UrlService : IUrlService
+public sealed class UrlService(
+    IShortLinkGenerator generator, 
+    ICacheRepository cache, 
+    IUrlMapsRepository urlMapsRepo)
+    : IUrlService
 {
-    private readonly IShortLinkGenerator _generator;
-    private readonly ICacheRepository _cache;
-    private readonly IUrlMapsRepository _urlMapsRepo;
-
-    public UrlService(IShortLinkGenerator generator, ICacheRepository cache, IUrlMapsRepository urlMapsRepo)
-    {
-        _generator = generator;
-        _cache = cache;
-        _urlMapsRepo = urlMapsRepo;
-    }
-    
+    // TODO: Create a Result Combine.
     public async Task<Result<string>> FetchRedirectLinkAsync(string shortLink, CancellationToken token = default)
     {
         var validationResult = ShortLink.Create(shortLink);
@@ -27,21 +22,21 @@ public sealed class UrlService : IUrlService
             return validationResult.Error!;
         }
 
-        var fromCacheResult = await _cache.FetchAsync<string>(shortLink);
+        var fromCacheResult = await cache.FetchAsync<string>(shortLink, token);
 
         if (fromCacheResult.IsSuccess)
         {
             return fromCacheResult.Value!;
         }
 
-        var fromDbResult = await _urlMapsRepo.FindRedirectAsync(validationResult.Value);
+        var fromDbResult = await urlMapsRepo.FindRedirectAsync(validationResult.Value!, token);
 
         if (fromDbResult.IsSuccess)
         {
-            return fromDbResult.Value!;
+            return fromDbResult.Value!.Value;
         }
 
-        return new Error("UrlService.NotFound", "Given short link has not been found.");
+        return UrlServiceErrors.NotFound;
     }
 
     public async Task<Result<string>> CreateShortLinkAsync(string redirectLink, TimeSpan? expiryTimeout = null, CancellationToken token = default)
@@ -58,7 +53,7 @@ public sealed class UrlService : IUrlService
 
         while (!isSuccess && attemptsLeft >= 0)
         {
-            var shortLink = _generator.Generate();
+            var shortLink = generator.Generate();
             var newRedirectLink = validationResult.Value!;
 
             result = shortLink.Value;
@@ -69,12 +64,12 @@ public sealed class UrlService : IUrlService
                 newRedirectLink,
                 expiryTimeout is null ? null : DateOnly.FromDateTime(DateTime.UtcNow).AddDays((int)expiryTimeout.Value.TotalDays));
 
-            isSuccess = (await _urlMapsRepo.CreateAsync(urlMap, token)).IsSuccess;
-            await _cache.AddAsync(shortLink.Value, newRedirectLink.Value, token);
+            isSuccess = (await urlMapsRepo.CreateAsync(urlMap, token)).IsSuccess;
+            await cache.AddAsync(shortLink.Value, newRedirectLink.Value, token);
         }
 
         return !isSuccess
-            ? new Error("UrlService.CreateError", "Something went wrong during creating short link.")
+            ? UrlServiceErrors.CreateError
             : result;
     }
 }
