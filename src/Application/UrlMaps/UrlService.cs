@@ -62,7 +62,7 @@ public sealed class UrlService(
             var urlMap = new UrlMap(
                 shortLink, 
                 newRedirectLink,
-                expiryTimeout is null ? null : DateOnly.FromDateTime(DateTime.UtcNow).AddDays((int)expiryTimeout.Value.TotalDays));
+                expiryTimeout is null ? null : DateTime.UtcNow.Add(expiryTimeout.Value));
 
             isSuccess = (await urlMapsRepo.CreateAsync(urlMap, token)).IsSuccess;
             await cache.AddAsync(shortLink.Value, newRedirectLink.Value, token);
