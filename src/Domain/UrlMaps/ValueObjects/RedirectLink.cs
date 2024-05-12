@@ -1,29 +1,25 @@
 using System.Text.RegularExpressions;
 using Domain.Common;
+using Domain.DomainErrors.ValueObjects;
 
 namespace Domain.UrlMaps.ValueObjects;
 
 public sealed partial class RedirectLink : ValueObject
 {
-    public string Value { get; }
-
     private RedirectLink(string redirectLink)
     {
         Value = redirectLink;
     }
 
+    public string Value { get; }
+
     public static Result<RedirectLink> Create(string redirectLink)
     {
-        return Validate(redirectLink) 
-            ? new RedirectLink(redirectLink)
-            : new Error("RedirectLink.ValidationFailure", "Given redirect link has incorrect format.");
+        if (!RedirectLinkRegex().IsMatch(redirectLink)) return RedirectLinkErrors.ValidationFailure;
+
+        return new RedirectLink(redirectLink);
     }
 
-    public static bool Validate(string redirectLink)
-    {
-        return RedirectLinkRegex().IsMatch(redirectLink);
-    }
-    
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

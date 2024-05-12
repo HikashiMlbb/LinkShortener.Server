@@ -17,10 +17,14 @@ public class DapperContext : IDapperContext
         _connectionString = dataAccessOptions;
         _masterConnectionString = dataAccessOptions.WithDatabase("master");
     }
-    
+
     public IDbConnection Create()
-        => new SqlConnection(_connectionString);
-    
+    {
+        return new SqlConnection(_connectionString);
+    }
+
     public IDbConnection CreateMaster()
-        => new SqlConnection(_masterConnectionString);
+    {
+        return new SqlConnection(_masterConnectionString);
+    }
 }

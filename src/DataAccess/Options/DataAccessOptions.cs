@@ -7,14 +7,13 @@ public class DataAccessOptions
 {
     public const string DataAccess = "DataAccess";
 
-    [Required]
-    public string Server { get; set; } = null!;
-    [Required]
-    public string Database { get; set; } = null!;
-    [Required]
-    public string UserId { get; set; } = null!;
-    [Required]
-    public string Password { get; set; } = null!;
+    [Required] public string Server { get; set; } = null!;
+
+    [Required] public string Database { get; set; } = null!;
+
+    [Required] public string UserId { get; set; } = null!;
+
+    [Required] public string Password { get; set; } = null!;
 
     public override string ToString()
     {

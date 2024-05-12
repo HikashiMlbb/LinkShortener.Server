@@ -1,15 +1,15 @@
-using Application.Common.Errors;
 using Application.Common.Repositories;
 using Application.Services.Interfaces;
 using Domain.Common;
+using Domain.DomainErrors.Services;
 using Domain.UrlMaps.Entities;
 using Domain.UrlMaps.ValueObjects;
 
 namespace Application.UrlMaps;
 
 public sealed class UrlService(
-    IShortLinkGenerator generator, 
-    ICacheRepository cache, 
+    IShortLinkGenerator generator,
+    ICacheRepository cache,
     IUrlMapsRepository urlMapsRepo)
     : IUrlService
 {
@@ -17,35 +17,24 @@ public sealed class UrlService(
     public async Task<Result<string>> FetchRedirectLinkAsync(string shortLink, CancellationToken token = default)
     {
         var validationResult = ShortLink.Create(shortLink);
-        if (validationResult.IsFailure)
-        {
-            return validationResult.Error!;
-        }
+        if (validationResult.IsFailure) return validationResult.Error!;
 
         var fromCacheResult = await cache.FetchAsync<string>(shortLink, token);
 
-        if (fromCacheResult.IsSuccess)
-        {
-            return fromCacheResult.Value!;
-        }
+        if (fromCacheResult.IsSuccess) return fromCacheResult.Value!;
 
         var fromDbResult = await urlMapsRepo.FindRedirectAsync(validationResult.Value!, token);
 
-        if (fromDbResult.IsSuccess)
-        {
-            return fromDbResult.Value!.Value;
-        }
+        if (fromDbResult.IsSuccess) return fromDbResult.Value!.Value;
 
         return UrlServiceErrors.NotFound;
     }
 
-    public async Task<Result<string>> CreateShortLinkAsync(string redirectLink, TimeSpan? expiryTimeout = null, CancellationToken token = default)
+    public async Task<Result<string>> CreateShortLinkAsync(string redirectLink, TimeSpan? expiryTimeout = null,
+        CancellationToken token = default)
     {
         var validationResult = RedirectLink.Create(redirectLink);
-        if (validationResult.IsFailure)
-        {
-            return validationResult.Error!;
-        }
+        if (validationResult.IsFailure) return validationResult.Error!;
 
         var attemptsLeft = 10;
         var isSuccess = false;
@@ -60,7 +49,7 @@ public sealed class UrlService(
             attemptsLeft--;
 
             var urlMap = new UrlMap(
-                shortLink, 
+                shortLink,
                 newRedirectLink,
                 expiryTimeout is null ? null : DateTime.UtcNow.Add(expiryTimeout.Value));
 

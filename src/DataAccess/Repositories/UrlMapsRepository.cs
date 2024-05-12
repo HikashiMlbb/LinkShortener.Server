@@ -3,6 +3,7 @@ using Application.UrlMaps;
 using Dapper;
 using DataAccess.Contexts.Abstractions;
 using Domain.Common;
+using Domain.DomainErrors.Repositories;
 using Domain.UrlMaps.Entities;
 using Domain.UrlMaps.ValueObjects;
 
@@ -14,18 +15,15 @@ public class UrlMapsRepository(IDapperContext context, IEventDispatcher eventDis
     {
         using var db = context.Create();
         db.Open();
-        
+
         var existingShortLink = await db.QuerySingleOrDefaultAsync<string>(GetByShortLinkQuery, new
         {
             ShortLink = urlMap.ShortLink.Value
         });
 
-        if (existingShortLink is not null)
-        {
-            return new Error("UrlMaps.AlreadyExists", "UrlMap with such short link already exists.");
-        }
-        
-        
+        if (existingShortLink is not null) return UrlMapsErrors.AlreadyExists;
+
+
         await db.ExecuteAsync(CreateQuery, new
         {
             ShortLink = urlMap.ShortLink.Value,
@@ -33,7 +31,7 @@ public class UrlMapsRepository(IDapperContext context, IEventDispatcher eventDis
             urlMap.ExpiryDate,
             urlMap.LastVisitDate
         });
-        
+
         return Result.Success();
     }
 
@@ -48,7 +46,7 @@ public class UrlMapsRepository(IDapperContext context, IEventDispatcher eventDis
         });
 
         return result is null
-            ? new Error("UrlMaps.NotFound", "UrlMap with such short link has not been found.")
+            ? UrlMapsErrors.NotFound
             : RedirectLink.Create(result);
     }
 
@@ -61,21 +59,18 @@ public class UrlMapsRepository(IDapperContext context, IEventDispatcher eventDis
         {
             Now = DateTime.UtcNow
         })).ToList();
-        
-        if (expiredShortLinks.Count == 0)
-        {
-            return new Error("UrlMaps.ExpiredNotFound", "Expired UrlMaps have not been found.");
-        }
+
+        if (expiredShortLinks.Count == 0) return UrlMapsErrors.ExpiredNotFound;
 
         await db.ExecuteAsync(DeleteExpiredQuery, new
         {
-            List = expiredShortLinks 
+            List = expiredShortLinks
         });
 
         var result = expiredShortLinks.Select(x => ShortLink.Create(x).Value!).ToList();
 
         await eventDispatcher.Raise(new ExpiredUrlMapsDeletedEvent(result), token);
-        
+
         return Result<IEnumerable<ShortLink>>.Success(result);
     }
 
@@ -104,5 +99,6 @@ public class UrlMapsRepository(IDapperContext context, IEventDispatcher eventDis
                                                DELETE FROM {UrlMap.Plural}
                                                WHERE {nameof(UrlMap.ShortLink)} in @List
                                                """;
+
     #endregion
 }

@@ -2,10 +2,6 @@ namespace Domain.Common;
 
 public sealed class Result
 {
-    public Error? Error { get; }
-    public bool IsSuccess => Error is null;
-    public bool IsFailure => !IsSuccess;
-
     private Result()
     {
         Error = null;
@@ -15,6 +11,10 @@ public sealed class Result
     {
         Error = error;
     }
+
+    public Error? Error { get; }
+    public bool IsSuccess => Error is null;
+    public bool IsFailure => !IsSuccess;
 
     public static Result Success()
     {

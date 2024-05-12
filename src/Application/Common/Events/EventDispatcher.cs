@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using Domain.Common;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,10 +13,7 @@ public class EventDispatcher(IServiceProvider provider) : IEventDispatcher
 
         foreach (var service in services)
         {
-            if ((service as IEventHandler<TEvent>) is not { } obj)
-            {
-                continue;
-            }
+            if ((service as IEventHandler<TEvent>) is not { } obj) continue;
 
             tasks.Add(obj.HandleAsync(@event, token));
         }

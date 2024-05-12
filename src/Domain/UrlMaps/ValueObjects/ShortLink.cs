@@ -1,29 +1,26 @@
 using Domain.Common;
 using Domain.Constraints;
+using Domain.DomainErrors.ValueObjects;
 
 namespace Domain.UrlMaps.ValueObjects;
 
 public sealed class ShortLink : ValueObject
 {
-    public string Value { get; }
-
     private ShortLink(string shortLink)
     {
         Value = shortLink;
     }
 
+    public string Value { get; }
+
     public static Result<ShortLink> Create(string shortLink)
     {
-        return Validate(shortLink)
-            ? new ShortLink(shortLink)
-            : new Error("ShortLink.ValidationFailure", "Given short link has incorrect format.");
+        if (shortLink.UsesUnallowedAlphabet() || shortLink.IsLengthOutOfRange())
+            return ShortLinkErrors.ValidationFailure;
+
+        return new ShortLink(shortLink);
     }
 
-    public static bool Validate(string shortLink)
-    {
-        return !(shortLink.UsesUnallowedAlphabet() || shortLink.IsLengthOutOfRange());
-    }
-    
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

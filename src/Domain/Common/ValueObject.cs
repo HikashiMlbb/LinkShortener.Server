@@ -3,12 +3,10 @@ namespace Domain.Common;
 public abstract class ValueObject
 {
     protected abstract IEnumerable<object> GetEqualityComponents();
+
     protected static bool EqualOperator(ValueObject? left, ValueObject? right)
     {
-        if ((left is null) ^ (right is null))
-        {
-            return false;
-        }
+        if (left is null ^ right is null) return false;
         return left!.Equals(right);
     }
 
@@ -20,10 +18,7 @@ public abstract class ValueObject
 
     public override bool Equals(object? obj)
     {
-        if (obj == null || obj.GetType() != GetType())
-        {
-            return false;
-        }
+        if (obj == null || obj.GetType() != GetType()) return false;
 
         var other = (ValueObject)obj;
 
@@ -36,7 +31,7 @@ public abstract class ValueObject
             .Select(x => x.GetHashCode())
             .Aggregate((x, y) => x ^ y);
     }
-    
+
     public static bool operator ==(ValueObject one, ValueObject two)
     {
         return EqualOperator(one, two);

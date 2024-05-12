@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Application.Common.Repositories;
 using Domain.Common;
+using Domain.DomainErrors.Repositories;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace DataAccess.Repositories;
@@ -11,15 +12,12 @@ public class CacheRepository(IDistributedCache cache) : ICacheRepository
     {
         var value = await cache.GetStringAsync(shortLink, token);
 
-        if (value is null)
-        {
-            return new Error("Cache.NotFound", "There is no value with such key in cache.");
-        }
+        if (value is null) return CacheErrors.NotFound;
 
         var result = JsonSerializer.Deserialize<T>(value);
 
         return result is null
-            ? new Error("Cache.MappingFailure", $"Unable to convert string to {typeof(T)}")
+            ? CacheErrors.DeserializeFailure
             : result;
     }
 
