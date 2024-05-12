@@ -1,13 +1,17 @@
 using System.Text.Json;
 using Application.Common.Repositories;
+using DataAccess.Options;
 using Domain.Common;
 using Domain.DomainErrors.Repositories;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 
 namespace DataAccess.Repositories;
 
-public class CacheRepository(IDistributedCache cache) : ICacheRepository
+public class CacheRepository(IDistributedCache cache, IOptions<DataAccessOptions> options) : ICacheRepository
 {
+    private readonly TimeSpan? _cacheTimeout = options.Value.CacheTimeout;
+
     public async Task<Result<T>> FetchAsync<T>(string shortLink, CancellationToken token = default) where T : class
     {
         var value = await cache.GetStringAsync(shortLink, token);
@@ -25,7 +29,10 @@ public class CacheRepository(IDistributedCache cache) : ICacheRepository
     {
         var serializedObject = JsonSerializer.Serialize(value);
 
-        await cache.SetStringAsync(shortLink, serializedObject, token);
+        await cache.SetStringAsync(shortLink, serializedObject, new DistributedCacheEntryOptions
+        {
+            SlidingExpiration = _cacheTimeout
+        }, token);
     }
 
     public async Task DeleteAsync(string shortLink, CancellationToken token = default)

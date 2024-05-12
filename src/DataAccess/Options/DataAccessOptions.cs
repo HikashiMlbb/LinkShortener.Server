@@ -14,6 +14,7 @@ public class DataAccessOptions
     [Required] public string UserId { get; set; } = null!;
 
     [Required] public string Password { get; set; } = null!;
+    public TimeSpan? CacheTimeout { get; set; }
 
     public override string ToString()
     {
