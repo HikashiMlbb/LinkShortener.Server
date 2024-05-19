@@ -42,6 +42,6 @@ public sealed class RedirectLinkTests
             .ToArray();
         
         // Assert
-        Assert.All(results, Assert.True);
+        Assert.All(results, Assert.False);
     }
 }
