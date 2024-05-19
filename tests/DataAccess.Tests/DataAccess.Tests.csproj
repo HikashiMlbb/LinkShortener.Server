@@ -26,6 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\DataAccess.Migrations\DataAccess.Migrations.csproj" />
       <ProjectReference Include="..\..\src\DataAccess\DataAccess.csproj" />
     </ItemGroup>
 

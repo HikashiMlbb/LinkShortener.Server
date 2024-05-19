@@ -34,7 +34,14 @@ public class DataAccessOptions
 
     public DataAccessOptions WithDatabase(string newDatabase)
     {
-        Database = newDatabase;
-        return this;
+        var smth = new DataAccessOptions
+        {
+            Server = Server,
+            Database = newDatabase,
+            UserId = UserId,
+            Password = Password,
+            CacheTimeout = CacheTimeout
+        };
+        return smth;
     }
 }
