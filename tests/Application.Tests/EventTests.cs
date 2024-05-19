@@ -1,11 +1,10 @@
-using System.Collections.Immutable;
-using Application.Common.Events;
-using Application.Common.Repositories;
+using Application.Abstractions.Events;
+using Application.Abstractions.Repositories;
+using Application.Events;
 using Application.Extensions;
 using Application.Tests.Mocks;
 using Application.Tests.TestEvents;
 using Application.UrlMaps;
-using Domain.Common;
 using Domain.UrlMaps.Entities;
 using Domain.UrlMaps.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;

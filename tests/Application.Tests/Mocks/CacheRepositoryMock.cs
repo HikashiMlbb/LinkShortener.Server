@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Application.Common.Repositories;
+using Application.Abstractions.Repositories;
 using Domain.Common;
 
 namespace Application.Tests.Mocks;

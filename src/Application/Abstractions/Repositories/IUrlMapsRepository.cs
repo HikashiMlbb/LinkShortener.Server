@@ -2,7 +2,7 @@ using Domain.Common;
 using Domain.UrlMaps.Entities;
 using Domain.UrlMaps.ValueObjects;
 
-namespace Application.Common.Repositories;
+namespace Application.Abstractions.Repositories;
 
 public interface IUrlMapsRepository
 {

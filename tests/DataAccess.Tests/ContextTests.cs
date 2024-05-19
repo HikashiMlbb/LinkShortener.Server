@@ -1,5 +1,6 @@
-using Application.Common.Events;
-using Application.Common.Repositories;
+using Application.Abstractions.Events;
+using Application.Abstractions.Repositories;
+using Application.Events;
 using Application.Extensions;
 using Application.Services;
 using Application.Services.Interfaces;
@@ -9,7 +10,6 @@ using DataAccess.Contexts.Abstractions;
 using DataAccess.Migrations;
 using DataAccess.Options;
 using DataAccess.Repositories;
-using Domain.Common;
 using Domain.UrlMaps.Entities;
 using Domain.UrlMaps.ValueObjects;
 using FluentMigrator.Runner;

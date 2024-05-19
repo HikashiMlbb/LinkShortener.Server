@@ -1,4 +1,4 @@
-using Domain.Common;
+using Application.Abstractions.Events;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Tests.TestEvents;

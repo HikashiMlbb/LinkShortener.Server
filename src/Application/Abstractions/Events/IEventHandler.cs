@@ -1,4 +1,4 @@
-namespace Domain.Common;
+namespace Application.Abstractions.Events;
 
 public interface IEventHandler<TEvent> where TEvent : IEvent
 {

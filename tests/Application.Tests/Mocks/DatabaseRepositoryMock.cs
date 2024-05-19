@@ -1,4 +1,4 @@
-using Application.Common.Repositories;
+using Application.Abstractions.Repositories;
 using Domain.Common;
 using Domain.UrlMaps.Entities;
 using Domain.UrlMaps.ValueObjects;

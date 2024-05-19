@@ -1,4 +1,4 @@
-using Domain.Common;
+using Application.Abstractions.Events;
 using Domain.UrlMaps.ValueObjects;
 
 namespace Application.UrlMaps;

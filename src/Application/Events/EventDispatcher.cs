@@ -1,7 +1,7 @@
-using Domain.Common;
+using Application.Abstractions.Events;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Application.Common.Events;
+namespace Application.Events;
 
 public class EventDispatcher(IServiceProvider provider) : IEventDispatcher
 {

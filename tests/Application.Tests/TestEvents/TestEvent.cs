@@ -1,4 +1,4 @@
-using Domain.Common;
+using Application.Abstractions.Events;
 
 namespace Application.Tests.TestEvents;
 

@@ -1,5 +1,5 @@
-using Application.Common.Repositories;
-using Domain.Common;
+using Application.Abstractions.Events;
+using Application.Abstractions.Repositories;
 
 namespace Application.UrlMaps;
 

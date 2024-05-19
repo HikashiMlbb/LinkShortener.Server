@@ -17,10 +17,10 @@ public static class MigrationManager
         var dataAccess = scope.ServiceProvider.GetRequiredService<IOptions<DataAccessOptions>>().Value;
 
         databaseManager.Create(dataAccess.Database);
-        
+
         migrationManager.ListMigrations();
         migrationManager.MigrateUp();
-        
+
         return host;
     }
 }

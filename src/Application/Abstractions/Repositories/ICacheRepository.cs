@@ -1,6 +1,6 @@
 using Domain.Common;
 
-namespace Application.Common.Repositories;
+namespace Application.Abstractions.Repositories;
 
 public interface ICacheRepository
 {

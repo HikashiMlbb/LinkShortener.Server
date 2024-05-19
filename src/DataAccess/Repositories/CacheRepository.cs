@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Application.Common.Repositories;
+using Application.Abstractions.Repositories;
 using DataAccess.Options;
 using Domain.Common;
 using Domain.DomainErrors.Repositories;

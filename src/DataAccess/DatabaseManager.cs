@@ -14,9 +14,6 @@ public sealed class DatabaseManager(IDapperContext context)
 
         var result = db.QueryFirstOrDefault(getQuery, new { name });
 
-        if (result is null)
-        {
-            db.Execute($"CREATE DATABASE {name}");
-        }
+        if (result is null) db.Execute($"CREATE DATABASE {name}");
     }
 }

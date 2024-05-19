@@ -1,4 +1,4 @@
-using Application.Common.Repositories;
+using Application.Abstractions.Repositories;
 using Application.Services.Interfaces;
 using Domain.Common;
 using Domain.DomainErrors.Services;

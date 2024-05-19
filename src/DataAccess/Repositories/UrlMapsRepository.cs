@@ -1,4 +1,5 @@
-using Application.Common.Repositories;
+using Application.Abstractions.Events;
+using Application.Abstractions.Repositories;
 using Application.UrlMaps;
 using Dapper;
 using DataAccess.Contexts.Abstractions;
