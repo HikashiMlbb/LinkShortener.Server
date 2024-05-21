@@ -78,7 +78,7 @@ public class UrlMapsRepository(IDapperContext context, IEventDispatcher eventDis
     #region Constraints of sql queries
 
     private const string GetByShortLinkQuery = $"""
-                                                SELECT {nameof(UrlMap.ShortLink)} FROM {UrlMap.Plural}
+                                                SELECT {nameof(UrlMap.RedirectLink)} FROM {UrlMap.Plural}
                                                 WHERE {nameof(UrlMap.ShortLink)}=@ShortLink
                                                 """;
 
